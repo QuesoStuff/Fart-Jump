@@ -42,11 +42,9 @@ public class SpecialEffectsManager : MonoBehaviour
                                      float maxDuration = 2.7f) //EXPLOSION_DURATION_MAX
     {
         if (index < 0 || index >= particleEffects_.Count) return;
-        // Instantiate the ParticleSystem prefab
         ParticleSystem prefab = particleEffects_[index];
         if (prefab == null) return;
         ParticleSystem explosionInstance;
-        // Apply rotation if shouldRotate is true
         if (shouldRotate)
         {
             explosionInstance = Instantiate(prefab, position, Random.rotation);
@@ -66,7 +64,6 @@ public class SpecialEffectsManager : MonoBehaviour
         }
         main.startColor = startColor;
         explosionInstance.Play();
-        // Destroy the particle system's game object after it has finished
         Destroy(explosionInstance.gameObject, main.duration + main.startLifetime.constantMax);
     }
 

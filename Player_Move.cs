@@ -3,67 +3,54 @@ using UnityEngine;
 
 public class Player_Move : MonoBehaviour
 {
+    // Rigidbody for player movement
     [SerializeField] private Rigidbody2D rb2d_;
 
     // Movement Parameters
+    [Header("Movement Parameters")]
     [SerializeField] private float moveSpeed_ = 5.0f;
     [SerializeField] private float dashSpeed_ = 20f;
+    [SerializeField] private float gravityScale_ = 25.0f;
 
     // Jumping Parameters
+    [Header("Jumping Parameters")]
     [SerializeField] private float initialJumpForce_ = 0;
     [SerializeField] private float maxJumpForce_ = 15.0f;
     [SerializeField] private float maxJumpTime_ = 0.2f;
 
     // Jetpack Parameters
+    [Header("Jetpack Parameters")]
     [SerializeField] private float jetpackForce_ = 2.0f;
     [SerializeField] private float jetpackFuel_ = 5.0f;
     [SerializeField] private float refuelRate_ = 0.5f; // Amount of fuel added per second while falling
     [SerializeField] private float maxJetpackFuel_ = 10.0f; // Maximum jetpack fuel
 
-
-    // Other Physics Parameters
-    [SerializeField] private float gravityScale_ = 25.0f;
-
     // Dash Parameters
+    [Header("Dash Parameters")]
     [SerializeField] private float dashDuration_ = 0.2f;
 
     // Internal State Flags
     private bool isGrounded_;
     private bool isJumping_;
     private bool jetpackActivated_;
-    // just added 
+
+    // Singleton instance
     public static Player_Move instance_;
 
+    // Ensure singleton instance
     private void Awake()
     {
         GENERIC.MakeSingleton(ref instance_, this, this.gameObject, true);
     }
-    // Getters and setters
-    public bool IsGrounded
-    {
-        get => isGrounded_;
-        set => isGrounded_ = value;
-    }
 
-    public bool IsJumping
-    {
-        get => isJumping_;
-        set => isJumping_ = value;
-    }
-    public float JetpackFuel
-    {
-        get => jetpackFuel_;
-        set => jetpackFuel_ = Mathf.Clamp(value, 0, maxJetpackFuel_); // Clamping to ensure fuel stays within bounds
-    }
-    public bool JetpackActivated
-    {
-        get => jetpackActivated_;
-        set => jetpackActivated_ = value;
-    }
-    public float MaxJetpackFuel
-    {
-        get => maxJetpackFuel_;
-    }
+    // Getters and setters
+    public bool IsGrounded { get => isGrounded_; set => isGrounded_ = value; }
+    public bool IsJumping { get => isJumping_; set => isJumping_ = value; }
+    public float JetpackFuel { get => jetpackFuel_; set => jetpackFuel_ = Mathf.Clamp(value, 0, maxJetpackFuel_); }
+    public bool JetpackActivated { get => jetpackActivated_; set => jetpackActivated_ = value; }
+    public float MaxJetpackFuel { get => maxJetpackFuel_; }
+
+    // Update is called once per frame
     private void Update()
     {
         HandleMovement();
@@ -72,6 +59,7 @@ public class Player_Move : MonoBehaviour
         WrapAroundScreen();
     }
 
+    // Physics-related updates
     private void FixedUpdate()
     {
         ApplyGravity();
@@ -90,9 +78,7 @@ public class Player_Move : MonoBehaviour
         if (INPUT.Input_Tap_Jump())
         {
             if (IsGrounded)
-            {
                 StartJump();
-            }
             else if (!IsGrounded && JetpackFuel > 0)
                 JetpackActivated = true;
         }
@@ -128,6 +114,7 @@ public class Player_Move : MonoBehaviour
         }
     }
 
+    // Starts the jump process
     private void StartJump()
     {
         isGrounded_ = false;
@@ -137,6 +124,7 @@ public class Player_Move : MonoBehaviour
         StartCoroutine(JumpHeightAdjustmentRoutine());
     }
 
+    // Adjusts jump height based on input timing
     IEnumerator JumpHeightAdjustmentRoutine()
     {
         while (INPUT.Input_Move_Jump() && (Time.time - INPUT.TimerInputPressJump <= maxJumpTime_))
@@ -194,12 +182,6 @@ public class Player_Move : MonoBehaviour
         }
     }
 
-    void OnCollisionStay2D(Collision2D collision)
-    {
-        //if (collision.gameObject.CompareTag("Ground"))
-        //rb2d_.velocity = new Vector2(rb2d_.velocity.x, 0);
-    }
-
     // Called when the player exits a collision with the ground
     public void OnCollisionExit2D(Collision2D collision)
     {
@@ -209,17 +191,14 @@ public class Player_Move : MonoBehaviour
         }
     }
 
-
-
+    // Refuels the jetpack if the player is falling
     private void HandleRefueling()
     {
-        // Increase fuel if the player is falling
         if (!IsGrounded && rb2d_.velocity.y < 0)
         {
             JetpackFuel = Mathf.Min(JetpackFuel + (refuelRate_ * Time.deltaTime), maxJetpackFuel_);
         }
     }
-
 
     // Wraps the player around the screen if they fall off
     private void WrapAroundScreen()

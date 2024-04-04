@@ -6,7 +6,10 @@ public class EventHandler : MonoBehaviour
     {
         if (Player_Health.instance_ != null)
         {
-            Player_Health.instance_.OnPlayerDeath += Event_PlayerDeath;
+            Player_Health.instance_.OnPlayerDeath_ += Event_PlayerDeath;
+            Player_Health.instance_.OnHeal_ += Event_Heal;
+            Player_Health.instance_.OnFullHeal_ += Event_FullHeal;
+            Player_Health.instance_.OnDamage_ += Event_Damage;
         }
     }
 
@@ -14,7 +17,10 @@ public class EventHandler : MonoBehaviour
     {
         if (Player_Health.instance_ != null)
         {
-            Player_Health.instance_.OnPlayerDeath -= Event_PlayerDeath;
+            Player_Health.instance_.OnPlayerDeath_ -= Event_PlayerDeath;
+            Player_Health.instance_.OnHeal_ -= Event_Heal;
+            Player_Health.instance_.OnFullHeal_ -= Event_FullHeal;
+            Player_Health.instance_.OnDamage_ -= Event_Damage;
         }
     }
 
@@ -23,4 +29,18 @@ public class EventHandler : MonoBehaviour
         Debug.Log("Game Over!");
     }
 
+    private void Event_Heal()
+    {
+        Debug.Log("Player healed.");
+    }
+
+    private void Event_FullHeal()
+    {
+        Debug.Log("Player fully healed.");
+    }
+
+    private void Event_Damage()
+    {
+        Debug.Log("Player damaged.");
+    }
 }

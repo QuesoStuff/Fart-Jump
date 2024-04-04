@@ -9,17 +9,23 @@ public class Player_Health : MonoBehaviour
     [SerializeField] private int maxHp_ = 100;
     [SerializeField] private int fallspeedDamage_ = 15;
     [SerializeField] private int fallDamage_ = 7;
+
     // Current HP of the player
     private int currentHp_;
 
-    // Define a delegate type for handling player death
+    // Define delegates for healing, damages and death
+    public delegate void HealHandler();
+    public delegate void FullHealHandler();
+    public delegate void DamageHandler();
     public delegate void PlayerDeathHandler();
 
-    // Declare an event of the delegate type
-    public event PlayerDeathHandler OnPlayerDeath;
+    // Declare events of the delegate types
+    public event HealHandler OnHeal_;
+    public event HealHandler OnFullHeal_;
+    public event DamageHandler OnDamage_;
+    public event PlayerDeathHandler OnPlayerDeath_;
 
     // Awake is called when the script instance is being loaded
-
     private void Awake()
     {
         GENERIC.MakeSingleton(ref instance_, this, this.gameObject, true);
@@ -34,27 +40,38 @@ public class Player_Health : MonoBehaviour
         // Invoke the death event if HP reaches 0
         if (currentHp_ <= 0)
         {
-            OnPlayerDeath?.Invoke();
+            OnPlayerDeath_?.Invoke();
+        }
+        else
+        {
+            OnDamage_?.Invoke();
         }
     }
 
-    // fall damage 
-    public void TakeFallDamage(Vector2 Velocity)
+    // Method to apply fall damage to the player
+    public void TakeFallDamage(Vector2 velocity)
     {
-        float currFallSpeed = Mathf.Abs(Velocity.y);
-        Debug.Log("Current fall speed: " + currFallSpeed);
-
+        float currFallSpeed = Mathf.Abs(velocity.y);
         int damageMultiplier = (int)(currFallSpeed / fallspeedDamage_);
-        Debug.Log("Damage multiplier: " + damageMultiplier);
-
-        TakeDamage(damageMultiplier * fallDamage_);
+        int totalDamage = damageMultiplier * fallDamage_;
+        TakeDamage(totalDamage);
     }
 
     // Method to heal the player
     public void Heal(int amount)
     {
         currentHp_ += amount;
+        if (currentHp_ >= maxHp_)
+            OnFullHeal_?.Invoke(); // Invoke Full heal event
+        else
+            OnHeal_?.Invoke(); // Invoke heal event
         currentHp_ = Mathf.Min(currentHp_, maxHp_); // Ensure HP doesn't exceed maxHp_
+    }
+    // Method of Full heal
+    public void FullHeal()
+    {
+        currentHp_ = maxHp_;
+        OnFullHeal_?.Invoke();
     }
 
     // Method to get the current HP of the player
@@ -62,9 +79,10 @@ public class Player_Health : MonoBehaviour
     {
         return currentHp_;
     }
+
+    // Method to get the maximum HP of the player
     public int GetMaxHP()
     {
         return maxHp_;
     }
-
 }

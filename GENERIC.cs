@@ -1,14 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using System;
-
+using UnityEngine;
 
 public static class GENERIC
 {
-
-
-    // Assuming doubleTapThreshold_ and dashCooldown_ are defined in INPUT or passed as parameters
+    // Validates double tap input
     public static bool ValidateDoubleTap(Func<bool> tapCondition, ref float timerInputPress, ref float lastDashTime, float dashCooldown, float doubleTapThreshold)
     {
         bool state = false;
@@ -24,7 +19,7 @@ public static class GENERIC
         return state;
     }
 
-
+    // Creates a singleton instance of a MonoBehaviour
     public static void MakeSingleton<T>(ref T instance, T thisInstance, GameObject thisGameObject, bool persistAcrossScenes = true) where T : class
     {
         if (instance == null)
@@ -45,22 +40,20 @@ public static class GENERIC
         }
     }
 
+    // Moves an object towards a target position with specified speed
     public static void MoveTowardsTarget(Transform mover, Vector3 targetPosition, float speed, bool isLerping = false)
     {
-        if (isLerping) // smooth speed
+        if (isLerping) // Smooth speed
         {
             mover.position = Vector3.Lerp(mover.position, targetPosition, speed * Time.deltaTime);
         }
-        else //fixed speed
+        else // Fixed speed
         {
             mover.position = Vector3.MoveTowards(mover.position, targetPosition, speed * Time.deltaTime);
         }
     }
 
-    // Moves the object to a new location if it's out of the camera's view.
-
-
-    // Checks if the object is within the camera's viewport.
+    // Checks if the object is within the camera's viewport
     public static bool IsObjectInView(Transform objectTransform)
     {
         Vector3 screenPoint = Camera.main.WorldToViewportPoint(objectTransform.position);
@@ -68,21 +61,16 @@ public static class GENERIC
         return onScreen;
     }
 
-    // Respawns the object in relation to a target object, with an offset and optional randomization.
+    // Respawns the object with specified offset and optional randomization
     public static void RespawnWithOffsetAndRandomization(Transform objectToRespawn, Transform targetObject, Vector3 offset, bool randomizePosition, float randomRange)
     {
-        // Calculate the base new position with offset
         Vector3 newPosition = targetObject.position + offset;
-
-        // If randomization is enabled, adjust the position within the specified range
         if (randomizePosition)
         {
             float randomX = UnityEngine.Random.Range(-randomRange, randomRange);
             float randomY = UnityEngine.Random.Range(-randomRange, randomRange);
             newPosition += new Vector3(randomX, randomY, 0);
         }
-
-        // Use the basic respawn method to move the object
         RespawnAtNewLocation(objectToRespawn, newPosition);
     }
 
