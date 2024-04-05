@@ -7,17 +7,25 @@ public class Debug_UI : MonoBehaviour
 
     private void Update()
     {
-        if (Player_Move.instance_ != null && Player_Health.instance_ != null && debugText_ != null)
+        if (PlayerController.instance_ != null && debugText_ != null)
         {
-            Rigidbody2D rb = Player_Move.instance_.GetComponent<Rigidbody2D>();
-            int maxHp = Player_Health.instance_.GetMaxHP();
-            int currentHp = Player_Health.instance_.GetCurrentHp();
-            float maxFuel = Player_Move.instance_.MaxJetpackFuel;
-            float currentFuel = Player_Move.instance_.JetpackFuel;
-            debugText_.text = $"HP: {currentHp} / {maxHp}\n" +
-                             $"Position: {Player_Move.instance_.transform.position}\n" +
-                             $"Velocity: {rb.velocity}\n" +
-                             $"Jetpack Fuel: {currentFuel} / {maxFuel}";
+            // Assuming PlayerController has references to I_Healable and I_Jetpackable interfaces
+            I_Healable healBehavior = PlayerController.instance_.healBehavior_;
+            I_Jetpackable jetpackBehavior = PlayerController.instance_.jetpackableBehavior_;
+
+            // Access properties through the interfaces
+            if (healBehavior != null && jetpackBehavior != null)
+            {
+                int maxHp = healBehavior.MaxHp;
+                int currentHp = healBehavior.CurrentHp;
+                float maxFuel = jetpackBehavior.MaxJetpackFuel; // Assuming you add a property for MaxJetpackFuel
+                float currentFuel = jetpackBehavior.JetpackFuel;
+
+                debugText_.text = $"HP: {currentHp} / {maxHp}\n" +
+                                  $"Position: {PlayerController.instance_.transform.position}\n" +
+                                  $"Velocity: {PlayerController.instance_.rb2d_.velocity}\n" + // Assuming rb2d_ is public or accessible
+                                  $"Jetpack Fuel: {currentFuel} / {maxFuel}";
+            }
         }
     }
 }

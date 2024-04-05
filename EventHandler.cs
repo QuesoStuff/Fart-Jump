@@ -7,9 +7,9 @@ public class EventHandler : MonoBehaviour
         if (Player_Health.instance_ != null)
         {
             Player_Health.instance_.OnPlayerDeath_ += Event_PlayerDeath;
-            Player_Health.instance_.OnHeal_ += Event_Heal;
-            Player_Health.instance_.OnFullHeal_ += Event_FullHeal;
-            Player_Health.instance_.OnDamage_ += Event_Damage;
+            Player_Health.instance_.OnHeal__ += Event_Heal;
+            Player_Health.instance_.OnFullHeal__ += Event_FullHeal;
+            Player_Health.instance_.OnDamage__ += Event_Damage;
         }
     }
 
@@ -18,9 +18,9 @@ public class EventHandler : MonoBehaviour
         if (Player_Health.instance_ != null)
         {
             Player_Health.instance_.OnPlayerDeath_ -= Event_PlayerDeath;
-            Player_Health.instance_.OnHeal_ -= Event_Heal;
-            Player_Health.instance_.OnFullHeal_ -= Event_FullHeal;
-            Player_Health.instance_.OnDamage_ -= Event_Damage;
+            Player_Health.instance_.OnHeal__ -= Event_Heal;
+            Player_Health.instance_.OnFullHeal__ -= Event_FullHeal;
+            Player_Health.instance_.OnDamage__ -= Event_Damage;
         }
     }
 

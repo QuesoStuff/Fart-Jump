@@ -20,9 +20,9 @@ public class Player_Health : MonoBehaviour
     public delegate void PlayerDeathHandler();
 
     // Declare events of the delegate types
-    public event HealHandler OnHeal_;
-    public event HealHandler OnFullHeal_;
-    public event DamageHandler OnDamage_;
+    public event HealHandler OnHeal__;
+    public event HealHandler OnFullHeal__;
+    public event DamageHandler OnDamage__;
     public event PlayerDeathHandler OnPlayerDeath_;
 
     // Awake is called when the script instance is being loaded
@@ -44,7 +44,7 @@ public class Player_Health : MonoBehaviour
         }
         else
         {
-            OnDamage_?.Invoke();
+            OnDamage__?.Invoke();
         }
     }
 
@@ -62,16 +62,16 @@ public class Player_Health : MonoBehaviour
     {
         currentHp_ += amount;
         if (currentHp_ >= maxHp_)
-            OnFullHeal_?.Invoke(); // Invoke Full heal event
+            OnFullHeal__?.Invoke(); // Invoke Full heal event
         else
-            OnHeal_?.Invoke(); // Invoke heal event
+            OnHeal__?.Invoke(); // Invoke heal event
         currentHp_ = Mathf.Min(currentHp_, maxHp_); // Ensure HP doesn't exceed maxHp_
     }
     // Method of Full heal
     public void FullHeal()
     {
         currentHp_ = maxHp_;
-        OnFullHeal_?.Invoke();
+        OnFullHeal__?.Invoke();
     }
 
     // Method to get the current HP of the player
